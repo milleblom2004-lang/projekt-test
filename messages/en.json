@@ -96,7 +96,8 @@
     "label": "Display name",
     "hint": "2–30 characters: letters, numbers, spaces, . _ ' -",
     "submit": "Continue",
-    "saved": "Saved!"
+    "saved": "Saved!",
+    "save": "Save"
   },
   "feed": {
     "title": "Latest sightings",

@@ -96,7 +96,8 @@
     "label": "Visningsnamn",
     "hint": "2–30 tecken: bokstäver, siffror, mellanslag, . _ ' -",
     "submit": "Fortsätt",
-    "saved": "Sparat!"
+    "saved": "Sparat!",
+    "save": "Spara"
   },
   "feed": {
     "title": "Senaste observationerna",

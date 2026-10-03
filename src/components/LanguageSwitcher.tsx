@@ -25,7 +25,7 @@ export function LanguageSwitcher() {
             router.refresh();
           });
         }}
-        className="cursor-pointer appearance-none rounded-full border-2 border-ink bg-white py-1 pr-2 pl-2 text-sm font-bold uppercase"
+        className="cursor-pointer appearance-none rounded-full border-2 border-ink bg-white px-1.5 py-1 text-sm font-bold uppercase min-[400px]:px-2"
       >
         {locales.map((l) => (
           <option key={l} value={l} aria-label={localeNames[l]}>

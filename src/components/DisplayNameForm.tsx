@@ -46,7 +46,7 @@ export function DisplayNameForm({ next, initial = "" }: { next?: string; initial
       {error ? <p className="text-sm font-semibold text-hat-dark" role="alert">{error}</p> : null}
       {saved ? <p className="text-sm font-semibold text-emerald-700" role="status">{t("saved")}</p> : null}
       <button type="submit" disabled={pending || name.trim().length < 2} className="btn-primary !py-3">
-        {pending ? "…" : t("submit")}
+        {pending ? "…" : next ? t("submit") : t("save")}
       </button>
     </form>
   );

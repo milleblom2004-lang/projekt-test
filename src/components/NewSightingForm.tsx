@@ -22,12 +22,18 @@ export function NewSightingForm() {
   const [preview, setPreview] = useState<string | null>(null);
   const [preparing, setPreparing] = useState(false);
   const [location, setLocation] = useState<LatLng | null>(null);
-  const [sightedAt, setSightedAt] = useState(() => toLocalInputValue(new Date()));
+  const [sightedAt, setSightedAt] = useState("");
   const [description, setDescription] = useState("");
   const [consent, setConsent] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
-  const [maxDateTime] = useState(() => toLocalInputValue(new Date(Date.now() + 60_000)));
+  const [maxDateTime, setMaxDateTime] = useState("");
+
+  // Local date/time depends on the device's time zone, so fill it in after hydration.
+  useEffect(() => {
+    setSightedAt((v) => v || toLocalInputValue(new Date()));
+    setMaxDateTime(toLocalInputValue(new Date(Date.now() + 60_000)));
+  }, []);
 
   useEffect(() => () => void (preview && URL.revokeObjectURL(preview)), [preview]);
 

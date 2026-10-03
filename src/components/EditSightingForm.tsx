@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { updateSighting } from "@/app/actions/sightings";
@@ -20,17 +20,23 @@ export function EditSightingForm({
   const te = useTranslations("errors");
   const router = useRouter();
   const [location, setLocation] = useState<LatLng | null>({ latitude: initial.latitude, longitude: initial.longitude });
-  const [sightedAt, setSightedAt] = useState(() => toLocalInputValue(new Date(initial.sighted_at)));
+  const [sightedAt, setSightedAt] = useState("");
   const [description, setDescription] = useState(initial.description ?? "");
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
-  const [maxDateTime] = useState(() => toLocalInputValue(new Date(Date.now() + 60_000)));
+  const [maxDateTime, setMaxDateTime] = useState("");
+
+  // Convert to the device's time zone after hydration (the server doesn't know it).
+  useEffect(() => {
+    setSightedAt(toLocalInputValue(new Date(initial.sighted_at)));
+    setMaxDateTime(toLocalInputValue(new Date(Date.now() + 60_000)));
+  }, [initial.sighted_at]);
 
   const tooLong = [...description].length > DESCRIPTION_MAX;
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
-    if (!location || tooLong) return;
+    if (!location || tooLong || !sightedAt) return;
     const fd = new FormData();
     fd.set("latitude", String(location.latitude));
     fd.set("longitude", String(location.longitude));

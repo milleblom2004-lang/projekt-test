@@ -45,7 +45,7 @@ export function SightingFields({
           type="datetime-local"
           required
           value={sightedAt}
-          max={maxDateTime}
+          max={maxDateTime || undefined}
           onChange={(e) => onSightedAt(e.target.value)}
           className="input"
         />
