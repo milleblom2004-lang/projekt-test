@@ -5,49 +5,121 @@ import { useLocale, useTranslations } from "next-intl";
 import { createClient } from "@/lib/supabase/client";
 import { HatIcon } from "./HatLogo";
 
+type Mode = "signin" | "signup" | "forgot";
+type Status = { kind: "error" | "info"; text: string } | null;
+
+export const PASSWORD_MIN = 8;
+
+/** Map Supabase auth errors to translated message keys. */
+function authErrorKey(error: { code?: string; message?: string; status?: number }): string {
+  switch (error.code) {
+    case "invalid_credentials":
+      return "invalidCredentials";
+    case "user_already_exists":
+    case "email_exists":
+      return "accountExists";
+    case "weak_password":
+      return "weakPassword";
+    case "email_not_confirmed":
+      return "emailNotConfirmed";
+    case "over_email_send_rate_limit":
+    case "over_request_rate_limit":
+      return "rateLimited";
+    case "email_address_invalid":
+      return "invalidEmail";
+  }
+  if (error.status === 429) return "rateLimited";
+  return "error";
+}
+
 export function LoginPanel({ next = "/", reason }: { next?: string; reason?: string }) {
   const t = useTranslations("auth");
   const locale = useLocale();
+  const [mode, setMode] = useState<Mode>("signin");
   const [email, setEmail] = useState("");
-  const [state, setState] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [password, setPassword] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [status, setStatus] = useState<Status>(null);
 
-  const redirectTo = () =>
-    `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`;
+  const callbackUrl = (target: string) =>
+    `${window.location.origin}/auth/callback?next=${encodeURIComponent(target)}`;
+
+  // After a password login, /onboarding asks for a display name if needed
+  // and otherwise forwards to `next`. A full navigation picks up the new cookies.
+  const finish = () => window.location.assign(`/onboarding?next=${encodeURIComponent(next)}`);
+
+  function switchMode(m: Mode) {
+    setMode(m);
+    setStatus(null);
+  }
 
   async function google() {
     const supabase = createClient();
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
-      options: { redirectTo: redirectTo() },
+      options: { redirectTo: callbackUrl(next) },
     });
-    if (error) setState("error");
+    if (error) setStatus({ kind: "error", text: t("googleError") });
   }
 
-  async function magicLink(e: React.FormEvent) {
+  async function submit(e: React.FormEvent) {
     e.preventDefault();
-    setState("sending");
+    setBusy(true);
+    setStatus(null);
     const supabase = createClient();
-    const { error } = await supabase.auth.signInWithOtp({
-      email: email.trim(),
-      options: { emailRedirectTo: redirectTo(), data: { language: locale } },
-    });
-    setState(error ? "error" : "sent");
+    const cleanEmail = email.trim();
+    try {
+      if (mode === "signin") {
+        const { error } = await supabase.auth.signInWithPassword({ email: cleanEmail, password });
+        if (error) return setStatus({ kind: "error", text: t(authErrorKey(error)) });
+        return finish();
+      }
+
+      if (mode === "signup") {
+        if (password.length < PASSWORD_MIN) {
+          return setStatus({ kind: "error", text: t("weakPassword") });
+        }
+        const { data, error } = await supabase.auth.signUp({
+          email: cleanEmail,
+          password,
+          options: { emailRedirectTo: callbackUrl(next), data: { language: locale } },
+        });
+        if (error) return setStatus({ kind: "error", text: t(authErrorKey(error)) });
+        // Supabase hides whether an address is registered: an existing account
+        // comes back as a user without identities.
+        if (data.user && data.user.identities?.length === 0) {
+          setMode("signin");
+          return setStatus({ kind: "error", text: t("accountExists") });
+        }
+        if (data.session) return finish(); // e-mail confirmation turned off
+        return setStatus({ kind: "info", text: t("confirmSent", { email: cleanEmail }) });
+      }
+
+      // forgot password
+      const { error } = await supabase.auth.resetPasswordForEmail(cleanEmail, {
+        redirectTo: callbackUrl("/reset-password"),
+      });
+      if (error) return setStatus({ kind: "error", text: t(authErrorKey(error)) });
+      setStatus({ kind: "info", text: t("resetSent", { email: cleanEmail }) });
+    } catch {
+      setStatus({ kind: "error", text: t("error") });
+    } finally {
+      setBusy(false);
+    }
   }
+
+  const title = mode === "signup" ? t("signupTitle") : mode === "forgot" ? t("forgotTitle") : t("title");
+  const submitLabel = mode === "signup" ? t("createAccount") : mode === "forgot" ? t("sendReset") : t("signIn");
 
   return (
     <div className="card mx-auto w-full max-w-md p-6">
       <div className="mb-4 flex flex-col items-center text-center">
         <HatIcon className="h-16 w-16" />
-        <h1 className="mt-2 font-display text-3xl font-bold">{t("title")}</h1>
-        <p className="mt-1 text-ink/75">{reason ?? t("intro")}</p>
+        <h1 className="mt-2 font-display text-3xl font-bold">{title}</h1>
+        <p className="mt-1 text-ink/75">{mode === "forgot" ? t("forgotIntro") : (reason ?? t("intro"))}</p>
       </div>
 
-      {state === "sent" ? (
-        <div className="rounded-2xl border-2 border-ink bg-sky/40 p-4 text-center" role="status">
-          <p className="font-display text-xl font-semibold">{t("linkSent")}</p>
-          <p className="mt-1 text-sm">{t("linkSentHint", { email })}</p>
-        </div>
-      ) : (
+      {mode !== "forgot" ? (
         <>
           <button type="button" onClick={google} className="btn-secondary w-full !py-3">
             <GoogleG /> {t("google")}
@@ -55,27 +127,82 @@ export function LoginPanel({ next = "/", reason }: { next?: string; reason?: str
           <div className="my-4 flex items-center gap-3 text-sm font-semibold text-ink/60">
             <span className="h-0.5 flex-1 bg-ink/15" /> {t("or")} <span className="h-0.5 flex-1 bg-ink/15" />
           </div>
-          <form onSubmit={magicLink} className="flex flex-col gap-3">
-            <label htmlFor="email" className="label !mb-0">{t("emailLabel")}</label>
+          <div className="mb-4 grid grid-cols-2 rounded-full border-2 border-ink bg-white p-1" role="tablist">
+            {(["signin", "signup"] as const).map((m) => (
+              <button
+                key={m}
+                type="button"
+                role="tab"
+                aria-selected={mode === m}
+                onClick={() => switchMode(m)}
+                className={`rounded-full py-1.5 text-sm font-bold transition ${mode === m ? "bg-ink text-white" : "hover:bg-sun"}`}
+              >
+                {m === "signin" ? t("tabSignIn") : t("tabSignUp")}
+              </button>
+            ))}
+          </div>
+        </>
+      ) : null}
+
+      <form onSubmit={submit} className="flex flex-col gap-3">
+        <div>
+          <label htmlFor="email" className="label !mb-1 !text-base">{t("emailLabel")}</label>
+          <input
+            id="email"
+            type="email"
+            required
+            autoComplete="email"
+            inputMode="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder={t("emailPlaceholder")}
+            className="input"
+          />
+        </div>
+        {mode !== "forgot" ? (
+          <div>
+            <div className="flex items-baseline justify-between">
+              <label htmlFor="password" className="label !mb-1 !text-base">{t("passwordLabel")}</label>
+              {mode === "signin" ? (
+                <button type="button" onClick={() => switchMode("forgot")} className="text-sm font-semibold underline">
+                  {t("forgotLink")}
+                </button>
+              ) : null}
+            </div>
             <input
-              id="email"
-              type="email"
+              id="password"
+              type="password"
               required
-              autoComplete="email"
-              inputMode="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder={t("emailPlaceholder")}
+              minLength={mode === "signup" ? PASSWORD_MIN : undefined}
+              autoComplete={mode === "signup" ? "new-password" : "current-password"}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               className="input"
             />
-            <button type="submit" disabled={state === "sending"} className="btn-primary w-full !py-3">
-              {state === "sending" ? t("sending") : t("sendLink")}
-            </button>
-          </form>
-          {state === "error" ? <p className="mt-3 text-sm font-semibold text-hat-dark" role="alert">{t("error")}</p> : null}
-          <p className="mt-4 text-center text-xs text-ink/60">{t("noPasswords")}</p>
-        </>
-      )}
+            {mode === "signup" ? <p className="mt-1 text-sm text-ink/70">{t("passwordHint", { min: PASSWORD_MIN })}</p> : null}
+          </div>
+        ) : null}
+
+        {status ? (
+          <p
+            className={`rounded-2xl border-2 p-3 text-sm font-semibold ${status.kind === "error" ? "border-hat text-hat-dark" : "border-ink bg-sky/40"}`}
+            role={status.kind === "error" ? "alert" : "status"}
+          >
+            {status.text}
+          </p>
+        ) : null}
+
+        <button type="submit" disabled={busy} className="btn-primary w-full !py-3">
+          {busy ? "…" : submitLabel}
+        </button>
+      </form>
+
+      {mode === "forgot" ? (
+        <button type="button" onClick={() => switchMode("signin")} className="mt-4 w-full text-sm font-semibold underline">
+          ← {t("backToSignIn")}
+        </button>
+      ) : null}
+      <p className="mt-4 text-center text-xs text-ink/60">{t("privacyNote")}</p>
     </div>
   );
 }

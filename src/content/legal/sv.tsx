@@ -26,7 +26,7 @@ export function About() {
       <h2>Så funkar det</h2>
       <ul>
         <li>Alla kan titta på kartan och flödet – inget konto behövs.</li>
-        <li>För att lägga upp en observation loggar du in med Google eller en inloggningslänk via e-post.</li>
+        <li>För att lägga upp en observation loggar du in med Google eller med e-post och lösenord.</li>
         <li>Bara ditt valda visningsnamn syns offentligt – aldrig din e-postadress.</li>
         <li>Platsdata (EXIF/GPS) tas bort från alla bilder innan de sparas.</li>
         <li>Ser du något som inte hör hemma här? Använd knappen ”Anmäl” på observationen.</li>
@@ -125,7 +125,8 @@ export function Privacy() {
         <li>
           <strong>Konto:</strong> e-postadress, visningsnamn, föredraget språk, roll
           (användare/admin), när kontot skapades och i förekommande fall när det stängdes av.
-          Din e-postadress visas aldrig offentligt.
+          Din e-postadress visas aldrig offentligt. Om du använder lösenord sparas det bara som
+          en säker envägs-hash hos vår inloggningsleverantör – vi kan aldrig se det.
         </li>
         <li>
           <strong>Observationer:</strong> bilden, platsen du valt (latitud/longitud samt stad och

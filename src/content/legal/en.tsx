@@ -26,7 +26,7 @@ export function About() {
       <h2>How it works</h2>
       <ul>
         <li>Anyone can browse the map and the feed – no account needed.</li>
-        <li>To post a sighting, sign in with Google or a magic link sent to your e-mail.</li>
+        <li>To post a sighting, sign in with Google or with your e-mail and a password.</li>
         <li>Only your chosen display name is shown publicly – never your e-mail address.</li>
         <li>Location data (EXIF/GPS) is removed from every photo before it is stored.</li>
         <li>See something that should not be here? Use the “Report” button on the sighting.</li>
@@ -126,7 +126,8 @@ export function Privacy() {
         <li>
           <strong>Account:</strong> e-mail address, display name, preferred language, role
           (user/admin), account creation time and, if applicable, the time an account was banned.
-          Your e-mail address is never shown publicly.
+          Your e-mail address is never shown publicly. If you use a password, it is stored only
+          as a secure one-way hash by our authentication provider – we can never see it.
         </li>
         <li>
           <strong>Sightings:</strong> the photo, the location you chose (latitude/longitude, plus

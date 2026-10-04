@@ -4,7 +4,8 @@ import { safeNext } from "@/lib/safe-next";
 import type { EmailOtpType } from "@supabase/supabase-js";
 import { LOCALE_COOKIE, isLocale } from "@/i18n/config";
 
-// Handles both OAuth (?code=) and e-mail magic links (?code= or ?token_hash=&type=).
+// Handles OAuth (?code=) and e-mail links for sign-up confirmation and password
+// reset (?code= or ?token_hash=&type=).
 export async function GET(request: NextRequest) {
   const url = request.nextUrl;
   const next = safeNext(url.searchParams.get("next"));

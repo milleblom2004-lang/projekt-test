@@ -22,7 +22,7 @@ Leaflet + OpenStreetMap + markercluster · sharp · Tailwind CSS 4
 - **Sighting page** `/s/[id]`: share button (native share or copy link), report button, Open Graph preview image.
 - **My page**: edit or delete your sightings, change your display name, and delete your account (removes all posts and photos).
 - **Moderation** `/admin`: see reported sightings, hide/unhide, delete, ban/unban users (banning also hides all their posts) and dismiss reports.
-- **Auth**: "Continue with Google" or a magic link (no passwords). On first login you choose a display name. E-mail addresses are never shown publicly.
+- **Auth**: "Continue with Google" or e-mail + password (create account, log in, forgot password). On first login you choose a display name. E-mail addresses are never shown publicly.
 - **i18n**: English (default) and Swedish. The language is picked automatically from the browser, and there is a switcher in the header. Dates are shown in the viewer's locale and time zone.
 - **Footer pages**: About, Terms of Use, Privacy Policy (GDPR), each with the "no affiliation" disclaimer.
 
@@ -32,8 +32,8 @@ Leaflet + OpenStreetMap + markercluster · sharp · Tailwind CSS 4
 2. **Run the migration** in `supabase/migrations/` with `supabase db push` or the SQL editor. It creates the tables, row-level security, rate-limit triggers and the public `sightings` storage bucket.
 3. **Auth settings** (Supabase → Authentication):
    - URL configuration: set the Site URL and add `https://your-domain/auth/callback` (and `http://localhost:3000/auth/callback`) to the redirect URLs.
-   - Providers: enable Email (magic link) and Google (OAuth client ID/secret from Google Cloud, with `https://<project>.supabase.co/auth/v1/callback` as the authorised redirect).
-   - For production, configure custom SMTP so magic links are delivered reliably.
+   - Providers: enable Email (password sign-in) and Google (OAuth client ID/secret from Google Cloud, with `https://<project>.supabase.co/auth/v1/callback` as the authorised redirect).
+   - For production, configure custom SMTP so confirmation and password-reset e-mails are delivered reliably. While testing you can turn off **Confirm email** under the Email provider to skip the confirmation mail.
 4. **Make yourself admin** after signing in once:
    ```sql
    update public.users set role = 'admin' where email = 'you@example.com';
