@@ -10,7 +10,8 @@
     "admin": "Admin",
     "login": "Log in",
     "language": "Language",
-    "hatSpotted": "Hat spotted!"
+    "hatSpotted": "Hat spotted!",
+    "logout": "Log out"
   },
   "home": {
     "headline": "Community sightings of the striped hat – a fan project"

@@ -10,7 +10,8 @@
     "admin": "Admin",
     "login": "Logga in",
     "language": "Språk",
-    "hatSpotted": "Hatt spottad!"
+    "hatSpotted": "Hatt spottad!",
+    "logout": "Logga ut"
   },
   "home": {
     "headline": "Communityns observationer av den randiga hatten – ett fanprojekt"
