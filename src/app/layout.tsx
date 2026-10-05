@@ -19,6 +19,8 @@ export async function generateMetadata(): Promise<Metadata> {
     description: t("description"),
     applicationName: "HatSpotted",
     openGraph: { siteName: "HatSpotted", type: "website" },
+    // iPhone/iPad: open full screen when added to the home screen
+    appleWebApp: { capable: true, title: "HatSpotted", statusBarStyle: "default" },
   };
 }
 

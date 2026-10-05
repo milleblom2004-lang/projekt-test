@@ -246,5 +246,16 @@
     "title": "Hat not found",
     "text": "This page has wandered off. Maybe it's hiding under a hat?",
     "back": "Back to the map"
+  },
+  "install": {
+    "button": "📲 Install the app",
+    "title": "Add HatSpotted to your home screen",
+    "iosStep1": "Tap the Share button <icon></icon> at the bottom (or top) of Safari.",
+    "iosStep2": "Scroll down and tap \"Add to Home Screen\".",
+    "iosStep3": "Tap \"Add\" – the hat icon appears on your home screen.",
+    "iosChrome": "On iPhone this works best in Safari. Open hatspotted in Safari first.",
+    "otherStep1": "Open your browser's menu (⋮ or ⋯).",
+    "otherStep2": "Choose \"Install app\" or \"Add to Home screen\".",
+    "close": "Got it"
   }
 }

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { HatIcon } from "./HatLogo";
+import { InstallAppButton } from "./InstallAppButton";
 
 export async function Footer() {
   const t = await getTranslations("footer");
@@ -15,6 +16,7 @@ export async function Footer() {
           <Link href="/about" className="underline-offset-4 hover:underline">{t("about")}</Link>
           <Link href="/terms" className="underline-offset-4 hover:underline">{t("terms")}</Link>
           <Link href="/privacy" className="underline-offset-4 hover:underline">{t("privacy")}</Link>
+          <InstallAppButton />
         </nav>
         <p className="max-w-3xl text-ink/70">{t("disclaimer")}</p>
         <p className="text-ink/60">

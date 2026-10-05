@@ -246,5 +246,16 @@
     "title": "Hatten hittades inte",
     "text": "Den här sidan har vandrat iväg. Kanske gömmer den sig under en hatt?",
     "back": "Tillbaka till kartan"
+  },
+  "install": {
+    "button": "📲 Installera appen",
+    "title": "Lägg till HatSpotted på hemskärmen",
+    "iosStep1": "Tryck på Dela-knappen <icon></icon> längst ner (eller uppe) i Safari.",
+    "iosStep2": "Scrolla ner och tryck på ”Lägg till på hemskärmen”.",
+    "iosStep3": "Tryck på ”Lägg till” – hattikonen dyker upp på hemskärmen.",
+    "iosChrome": "På iPhone funkar det bäst i Safari. Öppna sajten i Safari först.",
+    "otherStep1": "Öppna webbläsarens meny (⋮ eller ⋯).",
+    "otherStep2": "Välj ”Installera app” eller ”Lägg till på startskärmen”.",
+    "close": "Uppfattat"
   }
 }
