@@ -51,10 +51,9 @@ describe("displayNameSchema", () => {
 });
 
 describe("negotiateLocale", () => {
-  it("picks Swedish for Swedish browsers and falls back to English", () => {
-    expect(negotiateLocale("sv-SE,sv;q=0.9,en;q=0.8")).toBe("sv");
-    expect(negotiateLocale("de-DE,de;q=0.9")).toBe("en");
-    expect(negotiateLocale("de-DE,sv;q=0.5")).toBe("sv");
+  it("serves English (the only language) to every browser", () => {
+    expect(negotiateLocale("en-GB,en;q=0.9")).toBe("en");
+    expect(negotiateLocale("sv-SE,sv;q=0.9")).toBe("en");
     expect(negotiateLocale(null)).toBe("en");
   });
 });

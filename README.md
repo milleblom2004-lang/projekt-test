@@ -23,7 +23,7 @@ Leaflet + OpenStreetMap + markercluster · sharp · Tailwind CSS 4
 - **My page**: edit or delete your sightings, change your display name, and delete your account (removes all posts and photos).
 - **Moderation** `/admin`: see reported sightings, hide/unhide, delete, ban/unban users (banning also hides all their posts) and dismiss reports.
 - **Auth**: "Continue with Google" or e-mail + password (create account, log in, forgot password). On first login you choose a display name. E-mail addresses are never shown publicly.
-- **i18n**: English (default) and Swedish. The language is picked automatically from the browser, and there is a switcher in the header. Dates are shown in the viewer's locale and time zone.
+- **Language**: English only for now, built on next-intl so more languages can be added later (a header switcher appears automatically). Dates and times follow each visitor's own device format and time zone.
 - **Footer pages**: About, Terms of Use, Privacy Policy (GDPR), each with the "no affiliation" disclaimer.
 
 ## Setup
@@ -67,7 +67,7 @@ Deleting an account deletes the auth user. Postgres cascades the delete to the p
 
 ## Adding a language
 
-1. Add the code to `locales` in `src/i18n/config.ts`.
+1. Add the code to `locales` in `src/i18n/config.ts`; the language switcher appears in the header once there are two or more.
 2. Add `messages/<code>.json` (copy `en.json`).
 3. Optionally add translated legal pages in `src/content/legal/<code>.tsx` and register them in `src/content/legal/index.ts`. Missing ones fall back to English.
 

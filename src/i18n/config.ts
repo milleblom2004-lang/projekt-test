@@ -1,13 +1,13 @@
-// Add a new language by adding its code here and a messages/<code>.json file
-// (plus translated legal pages in src/content/legal).
-export const locales = ["en", "sv"] as const;
+// The site is English-only for now. Add a language by adding its code here and
+// a messages/<code>.json file (plus translated legal pages in src/content/legal);
+// the language switcher in the header appears automatically when there are two or more.
+export const locales = ["en"] as const;
 export type Locale = (typeof locales)[number];
 export const defaultLocale: Locale = "en";
 export const LOCALE_COOKIE = "NEXT_LOCALE";
 
 export const localeNames: Record<Locale, string> = {
   en: "English",
-  sv: "Svenska",
 };
 
 export function isLocale(value: unknown): value is Locale {

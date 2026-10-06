@@ -4,7 +4,7 @@ import { useLocale } from "next-intl";
 import { useEffect, useState } from "react";
 
 /**
- * Renders a timestamp in the visitor's own locale and time zone. The server
+ * Renders a timestamp in the visitor's own date format and time zone. The server
  * renders a UTC fallback; the browser replaces it after hydration.
  */
 export function LocalTime({
@@ -18,12 +18,17 @@ export function LocalTime({
 }) {
   const locale = useLocale();
   const [text, setText] = useState(() => format(iso, locale, dateOnly, "UTC"));
-  useEffect(() => setText(format(iso, locale, dateOnly)), [iso, locale, dateOnly]);
+  useEffect(() => setText(format(iso, deviceLocale(locale), dateOnly)), [iso, locale, dateOnly]);
   return (
     <time dateTime={iso} className={className} suppressHydrationWarning>
       {text}
     </time>
   );
+}
+
+/** The visitor's own date format (e.g. Swedish phones get "6 okt. 2026"), whatever the UI language. */
+export function deviceLocale(fallback: string) {
+  return (typeof navigator !== "undefined" && navigator.languages?.[0]) || fallback;
 }
 
 export function format(iso: string, locale: string, dateOnly: boolean, timeZone?: string) {

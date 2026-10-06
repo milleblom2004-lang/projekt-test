@@ -7,7 +7,7 @@ import "leaflet.markercluster/dist/MarkerCluster.css";
 import { useEffect, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { addTiles, hatIcon } from "./leaflet-setup";
-import { format } from "../LocalTime";
+import { deviceLocale, format } from "../LocalTime";
 import { thumbUrl } from "@/lib/images";
 import { placeLabel } from "@/lib/place";
 import type { MapSighting } from "@/app/api/map/route";
@@ -83,7 +83,7 @@ export default function SightingsMap() {
       img.className = "aspect-square w-full rounded-xl border-2 border-[#1d3557] object-cover";
       const meta = document.createElement("div");
       meta.className = "text-xs font-semibold opacity-70";
-      meta.textContent = [format(s.sighted_at, locale, false), placeLabel(s, locale)]
+      meta.textContent = [format(s.sighted_at, deviceLocale(locale), false), placeLabel(s, locale)]
         .filter(Boolean)
         .join(" · ");
       const by = document.createElement("div");
