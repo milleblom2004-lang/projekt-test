@@ -4,7 +4,7 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { useEffect, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { addTiles, hatIcon } from "./leaflet-setup";
+import { addTiles, hatIcon, limitToWorld } from "./leaflet-setup";
 
 export interface LatLng {
   latitude: number;
@@ -44,9 +44,9 @@ export default function LocationPicker({
     const map = L.map(el.current, {
       center: value ? [value.latitude, value.longitude] : [25, 10],
       zoom: value ? 15 : 2,
-      worldCopyJump: true,
     });
     addTiles(map);
+    limitToWorld(map);
     map.on("click", (e: L.LeafletMouseEvent) => {
       const ll = e.latlng.wrap();
       onChangeRef.current({ latitude: ll.lat, longitude: ll.lng });

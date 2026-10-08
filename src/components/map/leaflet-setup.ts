@@ -25,6 +25,32 @@ export const hatIcon = L.divIcon({
   popupAnchor: [0, -40],
 });
 
+/** The edges of the Web Mercator world map. */
+export const WORLD_BOUNDS = L.latLngBounds([-85.06, -180], [85.06, 180]);
+
 export function addTiles(map: L.Map) {
-  L.tileLayer(TILE_URL, { attribution: TILE_ATTRIBUTION, maxZoom: 19 }).addTo(map);
+  L.tileLayer(TILE_URL, {
+    attribution: TILE_ATTRIBUTION,
+    maxZoom: 19,
+    noWrap: true, // one world, no repeated copies to the sides
+    bounds: WORLD_BOUNDS,
+  }).addTo(map);
+}
+
+/**
+ * Keep the map on a single world: it can't be dragged past the edges, and it
+ * can't be zoomed out so far that grey space shows around the world.
+ */
+export function limitToWorld(map: L.Map) {
+  map.setMaxBounds(WORLD_BOUNDS);
+  map.options.maxBoundsViscosity = 1;
+  const fit = () => {
+    const size = map.getSize();
+    // At zoom z the world is 256 * 2^z pixels wide and tall.
+    const minZoom = Math.max(1, Math.ceil(Math.log2(Math.max(size.x, size.y) / 256)));
+    map.setMinZoom(minZoom);
+    if (map.getZoom() < minZoom) map.setZoom(minZoom, { animate: false });
+  };
+  fit();
+  map.on("resize", fit);
 }

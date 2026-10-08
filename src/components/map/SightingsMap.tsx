@@ -6,7 +6,7 @@ import "leaflet/dist/leaflet.css";
 import "leaflet.markercluster/dist/MarkerCluster.css";
 import { useEffect, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { addTiles, hatIcon } from "./leaflet-setup";
+import { addTiles, hatIcon, limitToWorld } from "./leaflet-setup";
 import { deviceLocale, format } from "../LocalTime";
 import { thumbUrl } from "@/lib/images";
 import { placeLabel } from "@/lib/place";
@@ -25,12 +25,11 @@ export default function SightingsMap() {
     const map = L.map(el.current, {
       center: [25, 10],
       zoom: 2,
-      minZoom: 2,
-      worldCopyJump: true,
       zoomControl: false,
     });
     L.control.zoom({ position: "topright" }).addTo(map);
     addTiles(map);
+    limitToWorld(map);
     mapRef.current = map;
 
     // Zoom to the visitor's area only if they have already granted location access.
