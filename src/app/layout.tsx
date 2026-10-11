@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Fredoka, Nunito } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
+import { Analytics } from "@vercel/analytics/next";
 import { getLocale, getTranslations } from "next-intl/server";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -42,6 +43,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <Footer />
           <HatSpottedButton />
         </NextIntlClientProvider>
+        {/* Cookieless page-view statistics (Vercel Web Analytics) */}
+        <Analytics />
       </body>
     </html>
   );

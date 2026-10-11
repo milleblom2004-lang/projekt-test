@@ -3,7 +3,7 @@ import Link from "next/link";
 const contact = process.env.NEXT_PUBLIC_CONTACT_EMAIL || "hello@example.com";
 const Mail = () => <a href={`mailto:${contact}`}>{contact}</a>;
 
-export const updated = "2026-10-03";
+export const updated = "2026-10-11";
 
 export function About() {
   return (
@@ -139,7 +139,13 @@ export function Privacy() {
         </li>
         <li>
           <strong>Technical data:</strong> our authentication provider keeps sign-in logs (such
-          as IP address and time) for security. We do not use analytics or advertising trackers.
+          as IP address and time) for security.
+        </li>
+        <li>
+          <strong>Visitor statistics:</strong> we use Vercel Web Analytics to count page views
+          (which pages are visited, country, device and browser type, and referring site). It uses
+          no cookies and does not identify or track you across sites or visits. We use no
+          advertising trackers.
         </li>
       </ul>
       <p>
@@ -152,11 +158,13 @@ export function Privacy() {
         <li>Providing your account and publishing your sightings – performance of our agreement with you (Art. 6(1)(b)).</li>
         <li>Displaying your photo – your consent, given with the checkbox when you publish (Art. 6(1)(a)). You can withdraw it at any time by deleting the sighting.</li>
         <li>Moderation, abuse prevention and security (reports, bans, rate limits, logs) – our legitimate interest in a safe site (Art. 6(1)(f)).</li>
+        <li>Anonymous visitor statistics, to understand how the site is used and improve it – our legitimate interest (Art. 6(1)(f)).</li>
       </ul>
       <h2>Who else processes data</h2>
       <ul>
         <li><strong>Supabase</strong> – database, authentication, photo storage (data processor).</li>
-        <li><strong>Our web host</strong> – runs the site and receives standard request data such as IP addresses.</li>
+        <li><strong>Vercel</strong> – hosts the site, receives standard request data such as IP addresses, and provides the cookieless visitor statistics.</li>
+        <li><strong>Resend</strong> – sends our e-mails (account confirmation and password reset), so it receives your e-mail address.</li>
         <li><strong>Google</strong> – only if you choose “Continue with Google”; Google then confirms your identity and e-mail to us.</li>
         <li><strong>OpenStreetMap</strong> – map tiles are loaded from OpenStreetMap servers (which see your IP address), and coordinates/search terms are sent to the Nominatim service to look up place names.</li>
       </ul>
@@ -173,7 +181,8 @@ export function Privacy() {
       <h2>Cookies and local storage</h2>
       <p>
         We only use strictly necessary cookies: to keep you signed in and to remember your
-        language. No consent banner is needed for these, and we use no tracking cookies.
+        language. No consent banner is needed for these, and we use no tracking cookies – our
+        visitor statistics work without cookies.
       </p>
       <h2>Your rights</h2>
       <p>

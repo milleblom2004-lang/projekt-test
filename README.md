@@ -25,6 +25,7 @@ Leaflet + OpenStreetMap + markercluster · sharp · Tailwind CSS 4
 - **Auth**: "Continue with Google" or e-mail + password (create account, log in, forgot password). On first login you choose a display name. E-mail addresses are never shown publicly.
 - **Language**: English only for now, built on next-intl so more languages can be added later (a header switcher appears automatically). Dates and times follow each visitor's own device format and time zone.
 - **Footer pages**: About, Terms of Use, Privacy Policy (GDPR), each with the "no affiliation" disclaimer.
+- **Analytics**: Vercel Web Analytics (cookieless page views). Enable it under the project's **Analytics** tab in Vercel.
 
 ## Setup
 
