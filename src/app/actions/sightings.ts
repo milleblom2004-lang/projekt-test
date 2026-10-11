@@ -2,6 +2,7 @@
 
 import { randomUUID } from "node:crypto";
 import { revalidatePath } from "next/cache";
+import { after } from "next/server";
 import { getProfile } from "@/lib/auth";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { BUCKET } from "@/lib/supabase/env";
@@ -9,6 +10,7 @@ import { MAX_UPLOAD_BYTES, detectImageKind } from "@/lib/images";
 import { processImage } from "@/lib/process-image";
 import { reverseGeocode } from "@/lib/geocode";
 import { UPLOAD_LIMITS } from "@/lib/rate-limit";
+import { notifyNewSighting } from "@/lib/notify";
 import { firstErrorKey, newSightingSchema, sightingFieldsSchema } from "@/lib/validation";
 import type { Profile } from "@/lib/types";
 
@@ -109,6 +111,19 @@ export async function createSighting(formData: FormData): Promise<ActionResult<{
     await bucket.remove([`${base}.jpg`, `${base}_thumb.jpg`]);
     return { ok: false, error: error.message.includes("rate_limited") ? "rate_limited" : "generic" };
   }
+
+  // E-mail the site owner once the response has been sent (doesn't slow the upload down).
+  after(() =>
+    notifyNewSighting({
+      id,
+      imageUrl,
+      placeName: place.place_name,
+      country: place.country,
+      sightedAt: sighted_at,
+      description,
+      displayName: poster.display_name,
+    }),
+  );
 
   revalidatePath("/feed");
   revalidatePath("/me");
